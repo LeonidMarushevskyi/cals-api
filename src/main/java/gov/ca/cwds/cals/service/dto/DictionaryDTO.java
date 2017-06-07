@@ -1,12 +1,13 @@
 package gov.ca.cwds.cals.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import gov.ca.cwds.cals.service.mapper.StringTransform;
 import gov.ca.cwds.cals.service.mapper.RemoveTrailingSpaces;
+import gov.ca.cwds.cals.service.mapper.StringTransformStrategy;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * @author CWDS CALS API Team
@@ -15,13 +16,15 @@ import javax.validation.constraints.NotNull;
 public class DictionaryDTO extends BaseDTO {
 
     private static final long serialVersionUID = -1184272035663245384L;
-    
+
+    @StringTransform(strategies = StringTransformStrategy.CAMELCASE)
     @RemoveTrailingSpaces
     @JsonProperty("code")
     @NotNull
     @ApiModelProperty(required = true, readOnly = false, value = "Dictionary Status Code", example = "1")
     private String code;
 
+    @StringTransform(strategies = StringTransformStrategy.CAMELCASE)
     @RemoveTrailingSpaces
     @JsonProperty("description")
     @NotNull
