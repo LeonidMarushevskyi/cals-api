@@ -22,6 +22,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 
 import javax.security.auth.Subject;
@@ -94,6 +95,8 @@ public class RFA1aFormsResource {
       }
   )
   @ApiOperation(value = "Updates RFA 1A Form", response = RFA1aFormDTO.class)
+  @RequiresRoles("caseworker")
+  @RequiresPermissions("rfa1a:write:34")
   public Response updateApplicationForm(
       @PathParam(RFA_1A_APPLICATION_ID)
       @ApiParam(required = true, name = RFA_1A_APPLICATION_ID, value = "The RFA-1A Form Id")
@@ -101,7 +104,8 @@ public class RFA1aFormsResource {
       @ApiParam(name = "application", value = "The RFA-1A Application object")
       @Valid
           RFA1aFormDTO formDTO) {
-    SecurityUtils.getSubject().checkPermission("rfa1a:write:" + formDTO.getId());
+
+
     return resourceDelegate.update(new RFA1aFormsParameterObject(formId), formDTO);
   }
 
