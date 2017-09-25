@@ -6,6 +6,7 @@ import gov.ca.cwds.cals.inject.ApplicationModule;
 import gov.ca.cwds.cals.inject.DataAccessModule;
 import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.setup.Bootstrap;
+import poc.SecurityModule;
 
 /**
  * @author CWDS CALS API Team
@@ -38,6 +39,7 @@ public class CalsApiApplication extends BaseCalsApiApplication<CalsApiConfigurat
           }
 
         });
+        install(new SecurityModule());
       }
 
     };
