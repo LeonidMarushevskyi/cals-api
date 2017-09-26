@@ -24,9 +24,8 @@ import io.swagger.annotations.ApiResponses;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
-import poc.RequiresAbacPermission;
+import poc.Authorize;
 
-import javax.security.auth.Subject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -98,7 +97,7 @@ public class RFA1aFormsResource {
   @ApiOperation(value = "Updates RFA 1A Form", response = RFA1aFormDTO.class)
   @RequiresRoles("caseworker")
   @RequiresPermissions({"rfa1a:write:34", "rfa1a:read:34"})
-  @RequiresAbacPermission({"rfa1a:write:$arg1.id", "rfa1a:write:$result.status"})
+  @Authorize({"rfa1a:write:$arg1.id", "rfa1a:write:$result.status", "rfa1a:read:34"})
   public Response updateApplicationForm(
       @PathParam(RFA_1A_APPLICATION_ID)
       @ApiParam(required = true, name = RFA_1A_APPLICATION_ID, value = "The RFA-1A Form Id")

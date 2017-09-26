@@ -16,6 +16,6 @@ public class SecurityModule extends AbstractModule {
     bind(PermissionHandler.class)
             .annotatedWith(Names.named("rfa1a:read"))
             .to(Rfa1aWritePermission.class);
-    bindInterceptor(Matchers.any(), Matchers.annotatedWith(RequiresAbacPermission.class), new AbacMethodInterceptor());
+    bindInterceptor(Matchers.any(), Matchers.annotatedWith(Authorize.class), new AbacMethodInterceptor());
   }
 }

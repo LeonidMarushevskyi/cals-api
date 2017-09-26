@@ -23,10 +23,10 @@ public class AbacMethodInterceptor implements MethodInterceptor {
 
   @Override
   public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-    String[] permissions = methodInvocation.getMethod().getAnnotation(RequiresAbacPermission.class).value();
+    String[] permissions = methodInvocation.getMethod().getAnnotation(Authorize.class).value();
     Set<String> resultPermissions = new HashSet<>();
     for (String permission : permissions) {
-      if (isArgPermission(permission)) {
+      if (!isResultPermission(permission)) {
         checkArgPermission(permission, methodInvocation);
       } else if (isResultPermission(permission)) {
         resultPermissions.add(permission);
@@ -70,10 +70,6 @@ public class AbacMethodInterceptor implements MethodInterceptor {
       throw new AuthorizationException(e);
     }
     SecurityUtils.getSubject().checkPermission(permission);
-  }
-
-  private boolean isArgPermission(String permission) {
-    return permission.contains("$arg");
   }
 
   private boolean isResultPermission(String permission) {
