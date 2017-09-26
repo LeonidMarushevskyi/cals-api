@@ -1,6 +1,7 @@
 package poc;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 
 /**
@@ -15,5 +16,6 @@ public class SecurityModule extends AbstractModule {
     bind(PermissionHandler.class)
             .annotatedWith(Names.named("rfa1a:read"))
             .to(Rfa1aWritePermission.class);
+    bindInterceptor(Matchers.any(), Matchers.annotatedWith(RequiresAbacPermission.class), new AbacMethodInterceptor());
   }
 }
