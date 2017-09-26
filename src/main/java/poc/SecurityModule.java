@@ -1,8 +1,7 @@
 package poc;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.name.Named;
+import com.google.inject.name.Names;
 
 /**
  * Created by dmitry.rudenko on 9/22/2017.
@@ -10,13 +9,8 @@ import com.google.inject.name.Named;
 public class SecurityModule extends AbstractModule {
   @Override
   protected void configure() {
-
+    bind(PermissionHandler.class)
+            .annotatedWith(Names.named("rfa1a:write"))
+            .to(Rfa1aWritePermission.class);
   }
-
-  @Provides
-  @Named("rfa1a:write")
-  Rfa1aWritePermission rfa1aWritePermission() {
-    return new Rfa1aWritePermission();
-  }
-
 }

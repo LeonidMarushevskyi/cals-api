@@ -16,6 +16,6 @@ public class Rfa1aWritePermission implements PermissionHandler {
   @Override
   public boolean check(String id) {
     rfa1aFormService.find(new RFA1aFormsParameterObject(34L));
-    return Long.valueOf(id) < 1;
+    return Long.valueOf(id) > 1;
   }
 }

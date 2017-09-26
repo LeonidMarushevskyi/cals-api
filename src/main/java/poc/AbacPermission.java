@@ -17,7 +17,7 @@ class AbacPermission extends WildcardPermission {
   }
 
   AbacPermission() {
-
+    super(AbacPermission.class.getName());
   }
 
   public boolean implies(Permission permission) {
@@ -25,6 +25,6 @@ class AbacPermission extends WildcardPermission {
     AbacPermission abacPermission = (AbacPermission) permission;
     return abacPermission.id != null
             && abacPermission.permissionHandler != null
-            && abacPermission.permissionHandler.check(id);
+            && abacPermission.permissionHandler.check(abacPermission.id);
   }
 }
