@@ -12,5 +12,8 @@ public class SecurityModule extends AbstractModule {
     bind(PermissionHandler.class)
             .annotatedWith(Names.named("rfa1a:write"))
             .to(Rfa1aWritePermission.class);
+    bind(PermissionHandler.class)
+            .annotatedWith(Names.named("rfa1a:read"))
+            .to(Rfa1aWritePermission.class);
   }
 }
