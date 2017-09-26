@@ -13,11 +13,14 @@ import java.util.Optional;
  * Created by dmitry.rudenko on 9/25/2017.
  */
 public class AbacPermissionResolver implements PermissionResolver {
+  private static final String SUPPORTED_PERMISSION_PATTERN = "^[^:,*]+:[^:,*]+:[^:,*]+$";
+  private static final String PARTS_DELIMITER = ":";
+
   @Override
   public Permission resolvePermission(String permissionString) {
-    if (permissionString.matches("^[^:,*]+:[^:,*]+:[^:,*]+$")) {
-      String[] parts = permissionString.split(":");
-      String handlerName = parts[0] + ":" + parts[1];
+    if (permissionString.matches(SUPPORTED_PERMISSION_PATTERN)) {
+      String[] parts = permissionString.split(PARTS_DELIMITER);
+      String handlerName = parts[0] + PARTS_DELIMITER + parts[1];
       Optional<PermissionHandler> permissionHandler = findPermissionHandler(handlerName);
       if (permissionHandler.isPresent()) {
         return new AbacPermission(parts[2], permissionHandler.get(), permissionString);
