@@ -23,8 +23,12 @@ class AbacPermission extends WildcardPermission {
   public boolean implies(Permission permission) {
     if (!(permission instanceof AbacPermission)) return false;
     AbacPermission abacPermission = (AbacPermission) permission;
-    return abacPermission.id != null
-            && abacPermission.permissionHandler != null
-            && abacPermission.permissionHandler.check(abacPermission.id);
+    return abacPermission.check();
+  }
+
+  private boolean check() {
+    return id != null
+            && permissionHandler != null
+            && permissionHandler.check(id);
   }
 }
