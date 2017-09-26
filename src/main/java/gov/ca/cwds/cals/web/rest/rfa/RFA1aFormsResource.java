@@ -107,7 +107,7 @@ public class RFA1aFormsResource {
       @Valid
           RFA1aFormDTO formDTO) {
 
-
+    SecurityUtils.getSubject().checkPermission("rfa1a:write:34");
     return resourceDelegate.update(new RFA1aFormsParameterObject(formId), formDTO);
   }
 
