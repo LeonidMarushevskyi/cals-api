@@ -51,8 +51,13 @@ public class AbacMethodInterceptor implements MethodInterceptor {
       Parameter parameter = methodInvocation.getMethod().getParameters()[i];
       scriptContext.setAttribute(parameter.getName(), methodInvocation.getArguments()[i], ScriptContext.ENGINE_SCOPE);
     }
-    permission = scriptEngine.eval("\"" + permission + "\"", scriptContext).toString();
+    permission = eval(permission, scriptContext);
     SecurityUtils.getSubject().checkPermission(permission);
+  }
+
+  private String eval(String permission, ScriptContext scriptContext) throws ScriptException {
+    permission = scriptEngine.eval("\"" + permission + "\"", scriptContext).toString();
+    return permission;
   }
 
   private void checkResultPermissions(Set<String> permissions, Object result) throws AuthorizationException {
@@ -65,7 +70,7 @@ public class AbacMethodInterceptor implements MethodInterceptor {
     ScriptContext scriptContext = new SimpleScriptContext();
     scriptContext.setAttribute("result", result, ScriptContext.ENGINE_SCOPE);
     try {
-      permission = scriptEngine.eval("\"" + permission + "\"", scriptContext).toString();
+      permission = eval(permission, scriptContext);
     } catch (ScriptException e) {
       throw new AuthorizationException(e);
     }
