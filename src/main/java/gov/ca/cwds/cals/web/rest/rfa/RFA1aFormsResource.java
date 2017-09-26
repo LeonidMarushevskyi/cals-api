@@ -98,7 +98,7 @@ public class RFA1aFormsResource {
   @ApiOperation(value = "Updates RFA 1A Form", response = RFA1aFormDTO.class)
   @RequiresRoles("caseworker")
   @RequiresPermissions({"rfa1a:write:34", "rfa1a:read:34"})
-  @RequiresAbacPermission("rfa1a:write:$arg1.id")
+  @RequiresAbacPermission({"rfa1a:write:$arg1.id", "rfa1a:write:$result.status"})
   public Response updateApplicationForm(
       @PathParam(RFA_1A_APPLICATION_ID)
       @ApiParam(required = true, name = RFA_1A_APPLICATION_ID, value = "The RFA-1A Form Id")
