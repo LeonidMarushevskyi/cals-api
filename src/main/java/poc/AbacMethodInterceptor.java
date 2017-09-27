@@ -24,12 +24,13 @@ public class AbacMethodInterceptor implements MethodInterceptor {
   @Override
   public Object invoke(MethodInvocation methodInvocation) throws Throwable {
     String[] permissions = methodInvocation.getMethod().getAnnotation(Authorize.class).value();
-    Set<String> resultPermissions = new HashSet<>();
+    Set<PermissionString> resultPermissions = new HashSet<>();
     for (String permission : permissions) {
-      if (!isResultPermission(permission)) {
-        checkArgPermission(permission, methodInvocation);
+      PermissionString permissionString = new PermissionString(permission);
+      if (!permissionString.isResultPermission()) {
+        checkArgPermission(permissionString, methodInvocation);
       } else if (isResultPermission(permission)) {
-        resultPermissions.add(permission);
+        resultPermissions.add(permissionString);
       }
     }
 
@@ -45,36 +46,51 @@ public class AbacMethodInterceptor implements MethodInterceptor {
     }
   }
 
-  private void checkArgPermission(String permission, MethodInvocation methodInvocation) throws Exception {
+  private void checkArgPermission(PermissionString permissionString, MethodInvocation methodInvocation) throws Exception {
+    ScriptContext scriptContext = scriptContextFromArgs(methodInvocation);
+    checkIds(permissionString, scriptContext);
+  }
+
+  private void checkIds(PermissionString permissionString, ScriptContext scriptContext) {
+    Collection<Object> ids = selectIds(permissionString.getSelector(), scriptContext);
+    ids.stream()
+            .map(permissionString::apply)
+            .forEach(permission -> SecurityUtils.getSubject().checkPermission(permission));
+  }
+
+  private ScriptContext scriptContextFromArgs(MethodInvocation methodInvocation) {
     ScriptContext scriptContext = new SimpleScriptContext();
     for (int i = 0; i < methodInvocation.getMethod().getParameterCount(); i++) {
       Parameter parameter = methodInvocation.getMethod().getParameters()[i];
       scriptContext.setAttribute(parameter.getName(), methodInvocation.getArguments()[i], ScriptContext.ENGINE_SCOPE);
     }
-    permission = eval(permission, scriptContext);
-    SecurityUtils.getSubject().checkPermission(permission);
+    return scriptContext;
   }
 
-  private String eval(String permission, ScriptContext scriptContext) throws ScriptException {
-    permission = scriptEngine.eval("\"" + permission + "\"", scriptContext).toString();
-    return permission;
+  @SuppressWarnings("unchecked")
+  private Collection<Object> selectIds(String selector, ScriptContext scriptContext)  {
+    try {
+      return (Collection<Object>) scriptEngine.eval("[" + selector + "].flatten()", scriptContext);
+    } catch (ScriptException e) {
+      throw new AuthorizationException(e);
+    }
   }
 
-  private void checkResultPermissions(Set<String> permissions, Object result) throws AuthorizationException {
+  private void checkResultPermissions(Set<PermissionString> permissions, Object result) throws AuthorizationException {
     permissions.forEach(permission -> {
       checkResultPermission(permission, result);
     });
   }
 
-  private void checkResultPermission(String permission, Object result) throws AuthorizationException {
+  private void checkResultPermission(PermissionString permission, Object result)  {
+    ScriptContext scriptContext = scriptContextFromResult(result);
+    checkIds(permission, scriptContext);
+  }
+
+  private ScriptContext scriptContextFromResult(Object result) {
     ScriptContext scriptContext = new SimpleScriptContext();
-    scriptContext.setAttribute("result", result, ScriptContext.ENGINE_SCOPE);
-    try {
-      permission = eval(permission, scriptContext);
-    } catch (ScriptException e) {
-      throw new AuthorizationException(e);
-    }
-    SecurityUtils.getSubject().checkPermission(permission);
+    scriptContext.setAttribute(PermissionString.RESULT_KEYWORD, result, ScriptContext.ENGINE_SCOPE);
+    return scriptContext;
   }
 
   private boolean isResultPermission(String permission) {
@@ -82,7 +98,7 @@ public class AbacMethodInterceptor implements MethodInterceptor {
   }
 
   @SuppressWarnings("unchecked")
-  private Collection filterResult(Set<String> permissions, Collection results) throws IllegalAccessException, InstantiationException, ScriptException {
+  private Collection filterResult(Set<PermissionString> permissions, Collection results) throws IllegalAccessException, InstantiationException, ScriptException {
     Collection out = results.getClass().newInstance();
     for (Object result : results) {
       try {
@@ -94,5 +110,4 @@ public class AbacMethodInterceptor implements MethodInterceptor {
     }
     return out;
   }
-
 }
