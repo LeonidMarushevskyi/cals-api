@@ -21,7 +21,7 @@ public class AbacPermissionResolver implements PermissionResolver {
     if (permissionString.matches(SUPPORTED_PERMISSION_PATTERN)) {
       String[] parts = permissionString.split(PARTS_DELIMITER);
       String handlerName = parts[0] + PARTS_DELIMITER + parts[1];
-      Optional<PermissionHandler> permissionHandler = findPermissionHandler(handlerName);
+      Optional<Authorizer> permissionHandler = findPermissionHandler(handlerName);
       if (permissionHandler.isPresent()) {
         return new AbacPermission(parts[2], permissionHandler.get(), permissionString);
       }
@@ -29,10 +29,10 @@ public class AbacPermissionResolver implements PermissionResolver {
     return new WildcardPermission(permissionString);
   }
 
-  private Optional<PermissionHandler> findPermissionHandler(String name) {
+  private Optional<Authorizer> findPermissionHandler(String name) {
     try {
-      PermissionHandler permissionHandler = BaseApiApplication.getInjector().getInstance(Key.get(PermissionHandler.class, Names.named(name)));
-      return Optional.of(permissionHandler);
+      Authorizer authorizer = BaseApiApplication.getInjector().getInstance(Key.get(Authorizer.class, Names.named(name)));
+      return Optional.of(authorizer);
     } catch (Exception e) {
       return Optional.empty();
     }

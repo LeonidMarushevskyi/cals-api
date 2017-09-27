@@ -8,7 +8,7 @@ import gov.ca.cwds.cals.web.rest.parameter.RFA1aFormsParameterObject;
  * Created by dmitry.rudenko on 9/22/2017.
  */
 
-public class Rfa1aWritePermission implements PermissionHandler {
+public class Rfa1aWriteAuthorizer implements Authorizer {
 
   @Inject
   private RFA1aFormService rfa1aFormService;
@@ -16,6 +16,6 @@ public class Rfa1aWritePermission implements PermissionHandler {
   @Override
   public boolean check(String id) {
     rfa1aFormService.find(new RFA1aFormsParameterObject(34L));
-    return Long.valueOf(id) > 200;
+    return Long.valueOf(id) != 200;
   }
 }
