@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import poc.Authorize;
 
 /**
  * @author CWDS CALS API Team
@@ -25,6 +26,7 @@ public class RFA1aFormsDao extends BaseDaoImpl<RFA1aForm> {
   }
 
   @Override
+  @Authorize("rfa1a:read:&result.id")
   public List<RFA1aForm> findAll() {
     Session session = this.getSessionFactory().getCurrentSession();
     Query<RFA1aForm> query =

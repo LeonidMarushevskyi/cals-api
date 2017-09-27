@@ -7,6 +7,7 @@ import org.apache.shiro.authz.AuthorizationException;
 
 import javax.script.*;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,15 +28,19 @@ public class AbacMethodInterceptor implements MethodInterceptor {
     Set<PermissionString> resultPermissions = new HashSet<>();
     for (String permission : permissions) {
       PermissionString permissionString = new PermissionString(permission);
-      if (!permissionString.isResultPermission()) {
-        checkArgPermission(permissionString, methodInvocation);
-      } else if (isResultPermission(permission)) {
-        resultPermissions.add(permissionString);
+      if (permissionString.isTemplate()) {
+        if (!permissionString.isResultPermission()) {
+          checkArgPermission(permissionString, methodInvocation);
+        } else {
+          resultPermissions.add(permissionString);
+        }
+      } else {
+        SecurityUtils.getSubject().checkPermission(permission);
       }
     }
 
     Object result = methodInvocation.proceed();
-    if(resultPermissions.isEmpty()) {
+    if (resultPermissions.isEmpty()) {
       return result;
     }
     if (result instanceof Collection) {
@@ -68,7 +73,7 @@ public class AbacMethodInterceptor implements MethodInterceptor {
   }
 
   @SuppressWarnings("unchecked")
-  private Collection<Object> selectIds(String selector, ScriptContext scriptContext)  {
+  private Collection<Object> selectIds(String selector, ScriptContext scriptContext) {
     try {
       return (Collection<Object>) scriptEngine.eval("[" + selector + "].flatten()", scriptContext);
     } catch (ScriptException e) {
@@ -82,7 +87,7 @@ public class AbacMethodInterceptor implements MethodInterceptor {
     });
   }
 
-  private void checkResultPermission(PermissionString permission, Object result)  {
+  private void checkResultPermission(PermissionString permission, Object result) {
     ScriptContext scriptContext = scriptContextFromResult(result);
     checkIds(permission, scriptContext);
   }
@@ -93,13 +98,9 @@ public class AbacMethodInterceptor implements MethodInterceptor {
     return scriptContext;
   }
 
-  private boolean isResultPermission(String permission) {
-    return permission.contains("$result");
-  }
-
   @SuppressWarnings("unchecked")
   private Collection filterResult(Set<PermissionString> permissions, Collection results) throws IllegalAccessException, InstantiationException, ScriptException {
-    Collection out = results.getClass().newInstance();
+    Collection out = initOutput(results);
     for (Object result : results) {
       try {
         checkResultPermissions(permissions, result);
@@ -109,5 +110,12 @@ public class AbacMethodInterceptor implements MethodInterceptor {
       }
     }
     return out;
+  }
+
+  private Collection initOutput(Collection results) {
+    if (results instanceof Set) {
+      return new HashSet(results.size());
+    } else
+      return new ArrayList(results.size());
   }
 }

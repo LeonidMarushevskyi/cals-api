@@ -15,7 +15,9 @@ public class Rfa1aWriteAuthorizer implements Authorizer {
 
   @Override
   public boolean check(String id) {
+    //transaction presence check
     rfa1aFormService.find(new RFA1aFormsParameterObject(34L));
-    return Long.valueOf(id) != 200;
+    //simple authz rule
+    return Long.valueOf(id) != 39;
   }
 }
