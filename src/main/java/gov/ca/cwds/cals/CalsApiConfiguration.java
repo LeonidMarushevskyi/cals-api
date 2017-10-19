@@ -1,7 +1,6 @@
 package gov.ca.cwds.cals;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import gov.ca.cwds.cals.persistence.XADataSourceFactory;
 import gov.ca.cwds.rest.BaseApiConfiguration;
 import io.dropwizard.db.DataSourceFactory;
 
@@ -10,9 +9,6 @@ public class CalsApiConfiguration extends BaseApiConfiguration {
   private DataSourceFactory fasDataSourceFactory;
   private DataSourceFactory lisDataSourceFactory;
   private DataSourceFactory calsnsDataSourceFactory;
-
-  private XADataSourceFactory xaCalsnsDataSourceFactory;
-  private XADataSourceFactory xaCmsDataSourceFactory;
 
   private boolean upgardeDbOnStart = false;
 
@@ -41,26 +37,6 @@ public class CalsApiConfiguration extends BaseApiConfiguration {
 
   public void setCalsnsDataSourceFactory(DataSourceFactory calsnsDataSourceFactory) {
     this.calsnsDataSourceFactory = calsnsDataSourceFactory;
-  }
-
-  @JsonProperty
-  public XADataSourceFactory getXaCalsnsDataSourceFactory() {
-    return xaCalsnsDataSourceFactory;
-  }
-
-  public void setXaCalsnsDataSourceFactory(
-      XADataSourceFactory xaCalsnsDataSourceFactory) {
-    this.xaCalsnsDataSourceFactory = xaCalsnsDataSourceFactory;
-  }
-
-  @JsonProperty
-  public XADataSourceFactory getXaCmsDataSourceFactory() {
-    return xaCmsDataSourceFactory;
-  }
-
-  public void setXaCmsDataSourceFactory(
-      XADataSourceFactory xaCmsDataSourceFactory) {
-    this.xaCmsDataSourceFactory = xaCmsDataSourceFactory;
   }
 
   @JsonProperty

@@ -491,6 +491,7 @@ public class FacilityService implements CrudsService {
     throw new UnsupportedOperationException();
   }
 
+  @UnitOfWork(Constants.UnitOfWork.CMS)
   public PlacementHome createPlacementHomeByRfaApplication(RFA1aFormDTO formDTO) {
     return storePlacementHome(formDTO);
   }

@@ -1,9 +1,9 @@
 package gov.ca.cwds.cals.persistence.dao.cms;
 
 import com.google.inject.Inject;
-import gov.ca.cwds.cals.inject.XaCmsSessionFactory;
 import gov.ca.cwds.cals.service.SsaName3ParameterObject;
 import gov.ca.cwds.data.DaoException;
+import gov.ca.cwds.inject.CmsSessionFactory;
 import java.text.SimpleDateFormat;
 import javax.persistence.ParameterMode;
 import org.hibernate.Session;
@@ -23,7 +23,7 @@ public class XASsaName3Dao {
   private final SessionFactory sessionFactory;
 
   @Inject
-  public XASsaName3Dao(@XaCmsSessionFactory SessionFactory sessionFactory) {
+  public XASsaName3Dao(@CmsSessionFactory SessionFactory sessionFactory) {
     this.sessionFactory = sessionFactory;
   }
 

@@ -28,8 +28,6 @@ public class TestCalsApiApplication extends BaseCalsApiApplication<TestCalsApiCo
                 getFasHibernateBundle(),
                 getCmsHibernateBundle(),
                 getCalsnsHibernateBundle(),
-                getXaCmsHibernateBundle(),
-                getXaCalsnsHibernateBundle(),
                 getCmsRsHibernateBundle()
             );
           }

@@ -32,9 +32,7 @@ public class CalsApiApplication extends BaseCalsApiApplication<CalsApiConfigurat
                 getLisHibernateBundle(),
                 getFasHibernateBundle(),
                 getCmsHibernateBundle(),
-                getCalsnsHibernateBundle(),
-                getXaCmsHibernateBundle(),
-                getXaCalsnsHibernateBundle());
+                getCalsnsHibernateBundle());
           }
 
         });

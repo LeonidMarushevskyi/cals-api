@@ -5,7 +5,6 @@ import static gov.ca.cwds.cals.Constants.Validation.FORM_SUBMISSION_VALIDATION_S
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
-import com.atomikos.icatch.jta.UserTransactionImp;
 import com.google.inject.Inject;
 import gov.ca.cwds.cals.Constants;
 import gov.ca.cwds.cals.Constants.BusinessRulesAgendaGroups;
@@ -34,7 +33,6 @@ import java.util.Optional;
 import java.util.Set;
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import org.slf4j.Logger;
@@ -165,19 +163,13 @@ public class RFA1aFormService
     performSubmissionValidation(expandedFormDTO);
 
     // Start transaction here
-    UserTransaction userTransaction = new UserTransactionImp();
-    userTransaction.setTransactionTimeout(3600);
-    userTransaction.begin();
-
     PlacementHome storedPlacementHome = null;
 
     try {
       storedPlacementHome = storePlaceMentHome(expandedFormDTO);
       updateFormAfterPlacementHomeCreation(formId, storedPlacementHome.getIdentifier(),
           newStatus);
-      userTransaction.commit();
     } catch (Exception e) {
-      userTransaction.rollback();
       LOG.error("Can not create Placement Home", e);
       throw new SystemException(e.getMessage());
     }
@@ -189,11 +181,12 @@ public class RFA1aFormService
     return rfa1aFomMapper.toExpandedRFA1aFormDTO(form);
   }
 
-  private PlacementHome storePlaceMentHome(RFA1aFormDTO expandedFormDTO) {
+  public PlacementHome storePlaceMentHome(RFA1aFormDTO expandedFormDTO) {
     return facilityService.createPlacementHomeByRfaApplication(expandedFormDTO);
   }
 
-  private void updateFormAfterPlacementHomeCreation(
+  @UnitOfWork(CALSNS)
+  public void updateFormAfterPlacementHomeCreation(
       Long formId, String placementHomeId, RFAApplicationStatus newStatus) {
     RFA1aForm form = xaRfa1AFormsDao.find(formId);
     form.setStatus(newStatus);

@@ -1,9 +1,9 @@
 package gov.ca.cwds.cals.persistence.dao.cms;
 
 import com.google.inject.Inject;
-import gov.ca.cwds.cals.inject.XaCmsSessionFactory;
 import gov.ca.cwds.cals.persistence.model.cms.ClientScpEthnicity;
 import gov.ca.cwds.data.BaseDaoImpl;
+import gov.ca.cwds.inject.CmsSessionFactory;
 import org.hibernate.SessionFactory;
 
 /**
@@ -17,7 +17,7 @@ public class XaClientScpEthnicityDao extends BaseDaoImpl<ClientScpEthnicity> {
    * @param sessionFactory The session factory
    */
   @Inject
-  public XaClientScpEthnicityDao(@XaCmsSessionFactory SessionFactory sessionFactory) {
+  public XaClientScpEthnicityDao(@CmsSessionFactory SessionFactory sessionFactory) {
     super(sessionFactory);
   }
 }

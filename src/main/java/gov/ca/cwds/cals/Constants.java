@@ -249,10 +249,6 @@ public final class Constants {
 
     public static final String CALSNS = "calsns";
 
-    public static final String XA_CMS = "xa_cwscms";
-
-    public static final String XA_CALSNS = "xa_calsns";
-
     private UnitOfWork() {
     }
   }

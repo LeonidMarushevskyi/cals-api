@@ -1,7 +1,7 @@
 package gov.ca.cwds.cals.persistence.dao.calsns;
 
 import com.google.inject.Inject;
-import gov.ca.cwds.cals.inject.XaCalsnsSessionFactory;
+import gov.ca.cwds.cals.inject.CalsnsSessionFactory;
 import org.hibernate.SessionFactory;
 
 /**
@@ -10,7 +10,7 @@ import org.hibernate.SessionFactory;
 public class XaRFA1aFormsDao extends RFA1aFormsDao {
 
   @Inject
-  public XaRFA1aFormsDao(@XaCalsnsSessionFactory SessionFactory sessionFactory) {
+  public XaRFA1aFormsDao(@CalsnsSessionFactory SessionFactory sessionFactory) {
     super(sessionFactory);
   }
 
