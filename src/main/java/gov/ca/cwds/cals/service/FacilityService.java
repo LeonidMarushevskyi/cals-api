@@ -539,7 +539,7 @@ public class FacilityService implements CrudsService {
           state -> outOfStateCheckMapper.toOutOfStateCheck(substituteCareProvider, state),
           applicant.getRfa1bForm());
 
-      prepareSubstituteCareProviderPhoneticSearchKeywords(substituteCareProvider);
+      //prepareSubstituteCareProviderPhoneticSearchKeywords(substituteCareProvider);
     }
 
     storeOtherChildren(rfaApplicantIdsMap, form, storedPlacementHome);
