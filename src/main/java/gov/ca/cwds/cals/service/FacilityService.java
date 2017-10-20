@@ -568,7 +568,7 @@ public class FacilityService implements CrudsService {
 
   private void prepareAddressPhoneticSearchKeywords(PlacementHome placementHome) {
     SsaName3ParameterObject parameterObject = new SsaName3ParameterObject();
-    parameterObject.setTableName("ADR_PHNT");
+    parameterObject.setTableName("ADR_PHTT");
     parameterObject.setCrudOper("I");
     parameterObject.setIdentifier(placementHome.getIdentifier());
     parameterObject.setNameCd("P");
